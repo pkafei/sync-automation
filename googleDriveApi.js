@@ -72,21 +72,39 @@ function getAccessToken(oAuth2Client, callback) {
  * 
  */
 
-function meetingNotes(auth){
+// function createNotes(auth, fileId){
+//   const drive = google.drive({version: 'v3', auth});
+//   var dest = fs.createWriteStream('./meeting.md');
+//   drive.files.export({fileId: fileId, mimeType: 'text/plain'}, {responseType: 'stream'},
+//       function(err, res){
+//           res.data
+//           .on('end', () => {
+//               console.log('Done');
+//           })
+//           .on('error', err => {
+//               console.log('Error', err);
+//           })
+//           .pipe(dest);
+//       });
+//   };
+
+function meetingNotes(auth, fileId) {
   const drive = google.drive({version: 'v3', auth});
-  var fileId = '1mQcp8Wba2gGp0da9r1_XNtwwqdpbkPdMJf-UyxOB3ZA';
-  var dest = fs.createWriteStream('./meeting.md');
-  drive.files.export({fileId: fileId, mimeType: 'text/plain'}, {responseType: 'stream'},
-      function(err, res){
-          res.data
-          .on('end', () => {
-              console.log('Done');
-          })
-          .on('error', err => {
-              console.log('Error', err);
-          })
-          .pipe(dest);
+  var dest = fs.createWriteStream('./newMeeting.md');
+
+  return new Promise((resolve, reject) => {
+      drive.files.export({fileId: fileId, mimeType: 'text/plain'}, {responseType: 'stream'},
+          function(err, res){
+            if(err) {
+              reject(err)
+            } else {
+                res.data
+                .on('end', resolve)
+                .on('error', reject)
+                .pipe(dest);
+            }
+          });
       });
   };
 
-module.exports = {meetingNotes}
+module.exports.meetingNotes = meetingNotes
