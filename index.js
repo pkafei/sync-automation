@@ -15,7 +15,8 @@ inquirer.prompt(questions)
     var str = answers.cryptopad_url
     var re = /\/d\/(.+)\//i
     var id = str.match(re)
-    console.log(id[1]);
+    var google_id = id[1]
+    console.log(google_id);
 })
 
 
